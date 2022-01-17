@@ -3,11 +3,11 @@ import json
 file = open('Data/words.json')
 data = json.load(file)
 
-def getPercentage(position, total):
-    if position <= 0 or total <= 0 :
+def getPercentage(portion, total):
+    if portion <= 0 or total <= 0 :
         return 0.0
     else :
-        return round(((float(position)/total) * 100), 2)
+        return round(((float(portion)/total) * 100), 2)
 
 def getOccurenceByPosition(wordList, fileName):
     
@@ -18,21 +18,29 @@ def getOccurenceByPosition(wordList, fileName):
     for letter in alphabet:
         letterData = {}
         letters = [0,0,0,0,0]
+        wordsContaining = 0
     
         for x in range(5):
             for s in wordList:
+                if x == 0 and s != None and letter in s:
+                    wordsContaining += 1
+
                 if s[x] == letter:
                     letters[x] += 1
 
         totalOccurence = sum(letters)
         letterData.update(
             {
-                'total': totalOccurence, 
-                '1': getPercentage(letters[0], totalOccurence), 
-                '2': getPercentage(letters[1], totalOccurence),
-                '3': getPercentage(letters[2], totalOccurence),
-                '4': getPercentage(letters[3], totalOccurence),
-                '5': getPercentage(letters[4], totalOccurence),
+                'total': totalOccurence,
+                'containedIn': wordsContaining,
+                'appearancePercent': getPercentage(wordsContaining, len(wordList)),
+                'occurrence' : {
+                    '1': (letters[0]), 
+                    '2': (letters[1]),
+                    '3': (letters[2]),
+                    '4': (letters[3]),
+                    '5': (letters[4]),
+                }
             }
         )
         occurenceByPosition.update({letter: letterData})
